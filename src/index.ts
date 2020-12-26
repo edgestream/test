@@ -1,9 +1,13 @@
 import * as http from "http"
 
-let requestListener: http.RequestListener = (req, res) => {
-    res.writeHead(200)
-    res.write("HELLO")
-    res.end()
-}
-let server = http.createServer(requestListener)
-let listener = server.listen(3000)
+let server = http.createServer((req, res) => {
+        console.info("[%s] %s %s", server.constructor.name, req.method, req.url)
+        res.writeHead(200)
+        res.write("HELLO")
+        res.end()
+    })
+server.on("close", () => console.info("[%s] CLOSE", server.constructor.name))
+server.on("connection", (socket) => console.info("[%s] CONNECTION", server.constructor.name))
+server.on("error", (err) => console.info("[%s] ERROR: %s", server.constructor.name, err.message))
+server.on("listening", () => console.info("[%s] LISTENING", server.constructor.name))
+server.listen(3000)
